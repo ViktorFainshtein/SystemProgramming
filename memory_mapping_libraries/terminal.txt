@@ -1,0 +1,23 @@
+Static Linking:
+gcc -c -Wall -Werror -Wextra *.c
+ar -rcs <libname>.a *.o
+gcc <core name>.c -L. -l<lib name> -o <output name>
+
+Dynamic Linking - Explicite:
+gcc -c -fPIC *.c
+gcc -shared -o liball.so *.o
+
+add dlopen + dlsym + dlclose to main
+
+gcc -o <output name> <core name>.c <full lib name>.so
+// OR //
+gcc <core name>.c -L. -l<lib name> -o <output name>
+
+Dynamic Linking - Implicite:
+gcc -c -fPIC *.c
+gcc -shared -o liball.so *.o
+export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+gcc -L. <core name>.c -l <lib name> -o <output name>
+// OR //
+gcc -o <output name> <core name>.c -L ./ -l <lib name> -Wl,-rpath=./
+
