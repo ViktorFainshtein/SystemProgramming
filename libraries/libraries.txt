@@ -1,0 +1,44 @@
+1.Shared Library:
+A shared library or shared object is a file that is intended to be shared by executable files and further shared object files. Modules used by a program are loaded from individual shared objects into memory at load time or runtime, rather than being copied by a linker when it creates a single monolithic executable file for the program.
+Shared libraries can be statically linked during compile-time, meaning that references to the library modules are resolved and the modules are allocated memory when the executable file is created. But often linking of shared libraries is postponed until they are loaded.
+Most modern operating systems can have shared library files of the same format as the executable files. This offers two main advantages: first, it requires making only one loader for both of them, rather than two (having the single loader is considered well worth its added complexity). Secondly, it allows the executables also to be used as shared libraries, if they have a symbol table. Typical combined executable and shared library formats are ELF and Mach-O (both in Unix) and PE (Windows). 
+
+2.Dynamic Linking Library - DLL:
+Dynamic-link library (DLL) is implementation of the shared library concept.
+These libraries usually have the file extension DLL.
+The file formats for DLLs are the same as for Windows EXE files – that is, Portable Executable (PE).
+As with EXEs, DLLs can contain code, data, and resources, in any combination.
+
+3.Static Library:
+a static library or statically-linked library is a set of routines, external functions and variables which are resolved in a caller at compile-time and copied into a target application by a compiler, linker, or binder, producing an object file and a stand-alone executable. This executable and the process of compiling it are both known as a static build of the program.
+Static libraries are either merged with other static libraries and object files during building/linking to form a single executable or loaded at run-time into the address space of their corresponding executable at a static memory offset determined at compile-time/link-time.
+
+4.Load Time Relocation:
+Unlike executables, when shared libraries are being built, the linker can't assume a known load address for their code. The reason for this is simple. Each program can use any number of shared libraries, and there's simply no way to know in advance where any given shared library will be loaded in the process's virtual memory.
+Relocation is the process of assigning load addresses for position-dependent code and data of a program and adjusting the code and data to reflect the assigned addresses.
+A linker usually performs relocation in conjunction with symbol resolution, the process of searching files and libraries to replace symbolic references or names of libraries with actual usable addresses in memory before running a program.
+Relocation is typically done by the linker at link time, but it can also be done at load time by a relocating loader, or at run time by the running program itself.
+
+5.Position Independent Code - PIC:
+position-independent code (PIC) is a body of machine code that, being placed somewhere in the primary memory, executes properly regardless of its absolute address. PIC is commonly used for shared libraries, so that the same library code can be loaded in a location in each program address space where it does not overlap with other memory in use (for example, other shared libraries). 
+
+6.The Inside Story On Shared Libraries And Dynamic Loading:
+
+Compilers & Object Filse:
+Each object file contains the machine code instructions corresponding to the statements and declarations in the source program. However, closer examination reveals that object files are broken into a collection of sections corresponding to different parts of the source program.
+
+Linkers And Linking:
+To build an executable file, the linker (for example, ld) collects object files and libraries. The linker’s primary function is to bind symbolic names to memory addresses. To do this, it first scans the object files and concatenates the object file sections to form one large file (the text sections of all object files are concatenated, the data sections are concatenated, and so on). Then, it makes a second pass on the resulting file to bind symbol names to real memory addresses. To complete the second pass, each object file contains a relocation list, which contains symbol names and offsets within the object file that must be patched.
+
+Static Libraries:
+To improve modularity and reusability, programming libraries usually include commonly used functions. When a static library is included during program linking, the linker makes a pass through the library and adds all the code and data corresponding to symbols used in the source program. The linker ignores unreferenced library symbols and aborts with an error when it encounters a redefined symbol. An often-overlooked aspect of linking is that many compilers provide a pragma for declaring certain symbols as weak.
+
+Shared Libraries:
+To address the maintenance and resource problems with static libraries, most modern systems now use shared libraries or dynamic link libraries (DLLs). The primary difference between static and shared libraries is that using shared libraries delays the actual task of linking to runtime, where it is performed by a special dynamic linker–loader. So, a program and its libraries remain decoupled until the program actually runs. shared libraries let the operating system make a number of significant memory optimizations. Specifically, because libraries mostly consist of executable instructions and this code is normally not self-modifying, the operating system can arrange to place library code in read-only memory regions shared among processes (using page-sharing and other virtual memory techniques).
+
+Library loading:
+When a program linked with shared libraries runs, program execution does not immediately start with that program’s first statement. Instead, the operating system loads and executes the dynamic linker (usually called ld.so), which then scans the list of library names embedded in the executable. These library names are never encoded with absolute pathnames. Instead, the list has only simple names such as libpthread.so.0, libm.so.6, and libc.so.6, where the last digit is a library version number. To locate the libraries, the dynamic linker uses a configurable library search path. This path’s default value is normally stored in a system configuration file such as /etc/ld.so.conf. Additionally, other library search directories might be embedded in the executable or specified by the user in the LD_LIBRARY_PATH environment variable. Libraries always load in the order in which they were linked.
+
+Dynamic loading:
+An added feature of the dynamic linker is an API for accessing symbols and loading new libraries at runtime (dynamic loading). The dynamic loading mechanism is a critical part of many extensible systems, including scripting language interpreters. Dynamic loading is usually managed by three functions exposed by the dynamic linker: dlopen() (which loads a new shared library), dlsym() (which looks up a specific symbol in the library), and dlclose() (which unloads the library and removes it from memory).
+

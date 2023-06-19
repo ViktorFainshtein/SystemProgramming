@@ -1,0 +1,8 @@
+gcc -c -fPIC *.c
+gcc -shared -o liball.so *.o
+
+add dlopen + dlsym + dlclose to main
+
+gcc -o <output name> <core name>.c <full lib name>.so
+// OR //
+gcc <core name>.c -L. -l<lib name> -o <output name>

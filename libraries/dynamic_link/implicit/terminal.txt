@@ -1,0 +1,7 @@
+gcc -c -fPIC *.c
+gcc -shared -o liball.so *.o
+export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+gcc -L. <core name>.c -l <lib name> -o <output name>
+// OR //
+gcc -o <output name> <core name>.c -L ./ -l <lib name> -Wl,-rpath=./
+
